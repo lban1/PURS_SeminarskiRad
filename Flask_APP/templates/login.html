@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
+</head>
+<body>
+    <div class="pocetna">
+        <header class="grid">
+            <div class="left-pozicioniranje">
+                <p>Username</p>
+                <a href="/login"><img src="{{ url_for('static', filename='user-icon.png') }}" alt="User icon" width="70px"></a>
+            </div>
+            
+            <img class="right-pozicioniranje" src="{{ url_for('static', filename='icon.png') }}" width="70px">
+        </header>
+        <nav class="navigacija">
+            <a href="">Logout</a>
+            <a href="">Temperatura</a>
+            <a href="">Vlaga</a>
+        </nav>
+        <main>
+            <form action="/login" method="POST">
+                <label for="username">Username</label>
+                <input type="text" name="username">
+                <br>
+                <label for="password">Password</label>
+                <input type="password" name="password">
+                <br>
+                {%if poruka%}
+                <p style="color: red">{{poruka}}</p>
+                {%endif%}
+                <br>
+                <button>Login</button>                
+            </form>
+        </main>
+    </div>
+</body>
+</html>

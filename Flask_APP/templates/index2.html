@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
+</head>
+<body>
+    <div class="pocetna">
+        <header class="grid">
+            <div class="left-pozicioniranje">
+                <p>{{username|capitalize}}</p>
+                <a href="/login"><img src="{{ url_for('static', filename='user-icon.png') }}" alt="User icon" width="70px"></a>
+            </div>
+            
+            <img class="right-pozicioniranje" src="{{ url_for('static', filename='icon.png') }}" width="70px">
+        </header>
+        <nav class="navigacija">
+            <a href="/logout">Logout</a>
+            <a href="{{ url_for('home_page', id='1') }}">Temperatura</a>
+            <a href="{{ url_for('home_page', id='2') }}">Vlaga</a>
+            <a href="/DataBase">Baza podataka</a>
+        </nav>
+        <main>
+            <h2 class="naslov_tablice">{{ title2 }}</h2>
+            <table class="tablica_proba">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Vrijeme</th>
+                    <th>Vrijednost Temperature</th>
+                    <th>Vrijednost Vlage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for podatak in lista%}
+                    <tr>
+                        <td>{{podatak.0}}</td>
+                        <td>{{podatak.1}}</td>
+                        <td>{{podatak.2}}</td>
+                        <td>{{podatak.5}}</td>
+                    </tr>
+                    {% endfor %}                                  
+                </tbody>
+              </table>
+
+              <table class="tablica_proba">
+                <thead>                  
+                </thead>
+                <tbody>                
+                </tbody>
+              </table>
+        </main>
+    </div>
+        
+</body>
+</html>
