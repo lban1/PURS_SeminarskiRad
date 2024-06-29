@@ -20,6 +20,7 @@
             <a href="">Logout</a>
             <a href="">Temperatura</a>
             <a href="">Vlaga</a>
+            <a href="">Baza podataka</a>
         </nav>
         <main>
             <form action="/login" method="POST">
@@ -29,8 +30,8 @@
                 <label for="password">Password</label>
                 <input type="password" name="password">
                 <br>
-                {%if poruka%}
-                <p style="color: red">{{poruka}}</p>
+                {%if login_poruka%}
+                <p style="color: red">{{login_poruka}}</p>
                 {%endif%}
                 <br>
                 <button>Login</button>                

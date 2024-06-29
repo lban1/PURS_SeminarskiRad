@@ -1,9 +1,9 @@
 from flask import Flask, request, url_for, redirect, make_response, render_template, session, g, jsonify
 import MySQLdb
 from datetime import datetime
+from functools import wraps
 
 app = Flask("Prva flask aplikacija")
-
 
 @app.before_request
 def before_request_func():
@@ -39,16 +39,19 @@ def home_page():
         vrijeme, vrijednost = None, None
         naslov = None
 
-    response = render_template('index.html', title='Pocetna stranica', title2 = naslov, vrijeme_in = vrijeme, vrijednost_in = vrijednost)
+    response = render_template('index.html',username = session['username'], title='Pocetna stranica', title2 = naslov, vrijeme_in = vrijeme, vrijednost_in = vrijednost)
     return response, 200
 
 @app.route('/DataBase')
 def database_page():
-    #g.cursor.execute(render_template('read_vrijednosti.sql', table = 'temperatura'))
-    g.cursor.execute("SELECT * FROM temperatura INNER JOIN vlaga ON temperatura.datum = vlaga.datum")
-    lista_podataka = g.cursor.fetchall()
+    if session['id_ovlasti'] != 1:
+        return redirect(url_for('login'))
+    else:
+        #g.cursor.execute(render_template('read_vrijednosti.sql', table = 'temperatura'))
+        g.cursor.execute("SELECT * FROM temperatura INNER JOIN vlaga ON temperatura.datum = vlaga.datum")
+        lista_podataka = g.cursor.fetchall()
 
-    return render_template('index2.html', title = 'Database',title2 = 'BAZA PODATAKA', lista = lista_podataka)
+        return render_template('index2.html',username = session['username'], title = 'Database',title2 = 'BAZA PODATAKA', lista = lista_podataka)
 
 '''@app.post('/temperatura')
 def put_temperatura():
@@ -76,7 +79,7 @@ def after_request_func(response):
 
 @app.route('/')
 def index():
-    return render_template('index.html', naslov='Početna stranica')
+    return render_template('index.html',username = session['username'], naslov='Početna stranica')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -84,8 +87,11 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if username == 'lukab5' and password == '1234':
-            session['username'] = username
+        g.cursor.execute("SELECT username, id_ovlasti FROM korisnik WHERE username = %s AND password = %s", (username, password))
+        korisnik = g.cursor.fetchone()
+        if korisnik:
+            session['username'] = korisnik[0]
+            session['id_ovlasti'] = korisnik[1]
             return redirect(url_for('index'))
         else:
             return render_template('login.html', naslov="Stranica za prijavu", login_poruka="Uneseni su neispravni podaci")
@@ -95,7 +101,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('username')
+    session.pop('username', None)
+    session.pop('id_ovlasti', None)
     return redirect(url_for('login'))
 
 
